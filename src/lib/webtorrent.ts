@@ -1,5 +1,3 @@
-import WebTorrent from 'webtorrent';
-
 const TRACKERS = [
   'wss://tracker.btorrent.xyz',
   'wss://tracker.openwebtorrent.com',
@@ -7,12 +5,14 @@ const TRACKERS = [
   'wss://tracker.fastcast.nz',
 ];
 
-let client: WebTorrent.Instance | null = null;
+let client: any = null;
 
-export const getWebTorrentClient = async (): Promise<WebTorrent.Instance> => {
+export const getWebTorrentClient = async (): Promise<any> => {
   if (!client) {
-    client = new WebTorrent({ tracker: { announce: TRACKERS } } as any);
-    client.on('error', (err) => console.error('WebTorrent error:', err));
+    const WT = (window as any).WebTorrent;
+    if (!WT) throw new Error('WebTorrent not loaded');
+    client = new WT({ tracker: { announce: TRACKERS } });
+    client.on('error', (err: any) => console.error('WebTorrent error:', err));
     console.log('✅ WebTorrent client initialized');
   }
   return client;
