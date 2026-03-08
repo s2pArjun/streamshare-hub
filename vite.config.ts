@@ -28,7 +28,7 @@ export default defineConfig(({ mode }) => ({
     "process.version": JSON.stringify(""),
   },
   optimizeDeps: {
-    include: ["buffer", "events", "gun", "webtorrent"],
+    include: ["buffer", "events", "gun"],
     esbuildOptions: {
       define: { global: "globalThis" },
     },
@@ -38,7 +38,7 @@ export default defineConfig(({ mode }) => ({
     commonjsOptions: { transformMixedEsModules: true },
     rollupOptions: {
       output: {
-        manualChunks: { gun: ["gun"], webtorrent: ["webtorrent"] },
+        manualChunks: { gun: ["gun"] },
       },
     },
   },
