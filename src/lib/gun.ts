@@ -8,7 +8,7 @@ const getRelayPeers = (): string[] => {
   return [`http://${hostname}:8765/gun`];
 };
 
-export const gun = Gun({
+export const gun = (Gun as any)({
   peers: getRelayPeers(),
   localStorage: true,
   radisk: false,
@@ -37,7 +37,7 @@ export const addToCatalog = (item: MediaItem): Promise<void> => {
         addedAt: item.addedAt || Date.now(),
         addedBy: item.addedBy || 'anonymous',
         deleted: false,
-      } as any,
+      },
       (ack: any) => {
         if (ack.err) reject(new Error(ack.err));
         else resolve();
@@ -48,7 +48,7 @@ export const addToCatalog = (item: MediaItem): Promise<void> => {
 
 export const removeFromCatalog = (id: string): Promise<void> => {
   return new Promise((resolve, reject) => {
-    catalogRef.get(id).put({ deleted: true, deletedAt: Date.now() } as any, (ack: any) => {
+    catalogRef.get(id).put({ deleted: true, deletedAt: Date.now() }, (ack: any) => {
       if (ack.err) reject(new Error(ack.err));
       else resolve();
     });
@@ -79,9 +79,7 @@ export const subscribeToCatalog = (callback: (items: MediaItem[]) => void): (() 
     callback(Object.values(items).sort((a, b) => (b.addedAt || 0) - (a.addedAt || 0)));
   });
 
-  return () => {
-    // Gun.js doesn't have clean unsubscribe
-  };
+  return () => {};
 };
 
 export const getSampleContent = (): MediaItem[] => [
